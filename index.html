@@ -154,7 +154,7 @@
             justify-content: space-between;
             gap: 15px;
             margin-top: 20px;
-            height: 310px; 
+            height: 280px; 
         }
 
         .match-column {
@@ -169,12 +169,12 @@
         .match-box {
             background: #ecf0f1;
             border: 3px solid #bdc3c7;
-            border-radius: 12px;
-            height: 60px;
+            border-radius: 15px;
+            height: 80px;
+            font-size: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
             font-weight: 900;
             color: #2c3e50;
             cursor: pointer;
@@ -222,7 +222,7 @@
         @keyframes matchSuccess {
             0% { transform: scale(1.08); opacity: 1; margin-top: 0; }
             50% { transform: scale(1.15); opacity: 0.8; margin-top: 0; }
-            100% { transform: scale(0); opacity: 0; margin-top: -72px; }
+            100% { transform: scale(0); opacity: 0; margin-top: -92px; }
         }
 
         @keyframes shakeError {
@@ -336,7 +336,7 @@
 <body>
 
 <div id="level-screen" class="container wide-container">
-    <a href="https://matfabe.com/oyunlar/" class="btn-redirect-main">×</a>
+    <a href="https://matfabe.com/oyunlar/#dusen-kutular" class="btn-redirect-main">×</a>
     <h1>📦 Düşen Kutular</h1>
     <p class="level-subtitle">Doğru İşlemi ve Sonucu Eşleştir!<br>Seç ve Başla!</p>
     <div class="level-grid" id="levels"></div>
@@ -355,11 +355,10 @@
     </div>
     
     <div class="match-board">
-        <div class="match-column" id="col-questions"></div>
         <div class="match-column" id="col-answers"></div>
+        <div class="match-column" id="col-questions"></div>
     </div>
-
-    <p id="message">Bir işlem ve bir sonuç seç!</p>
+    <p id="message">Sonuç Seç,Cevap Seç!</p>
 </div>
 
 <div id="inspect-screen" class="container hidden">
@@ -461,7 +460,7 @@
         let tempPool = [...pool].sort(() => 0.5 - Math.random());
         let initialQs = [];
         
-        for(let i=0; i<4; i++) {
+        for(let i=0; i<3; i++) {
             if(tempPool.length > 0) {
                 initialQs.push(tempPool.pop());
             } else {
@@ -479,7 +478,6 @@
             availableFakes.sort(() => 0.5 - Math.random());
             
             initialAs.push(availableFakes[0]);
-            initialAs.push(availableFakes[1]);
         } else {
             initialAs = [...initialQs];
         }
@@ -488,14 +486,14 @@
         while(maxAttempts > 0) {
             let sideBySide = false;
             initialAs.sort(() => 0.5 - Math.random());
-            for(let i=0; i<4; i++) {
+            for(let i=0; i<3; i++) {
                 if (initialQs[i] === initialAs[i]) { sideBySide = true; break; }
             }
             if (!sideBySide) break;
             maxAttempts--;
         }
         
-        for(let i=0; i<4; i++) {
+        for(let i=0; i<3; i++) {
             addBoxToColumn('col-questions', initialQs[i], 'question');
             addBoxToColumn('col-answers', initialAs[i], 'answer');
         }
@@ -551,7 +549,7 @@
         box.className = 'match-box';
         
         if (type === 'question') {
-            box.innerText = `${currentLevel} × ${multiplier}`;
+            box.innerText = `= ${currentLevel} × ${multiplier}`;
             box.dataset.val = multiplier;
         } else {
             box.innerText = `${currentLevel * multiplier}`;
@@ -606,11 +604,12 @@
             score += 10;
             correctCount++;
             
-            if (historyData[qVal] !== 'wrong') historyData[qVal] = 'correct';
-            
             if (isMistakeMode) {
+                historyData[qVal] = 'correct'; 
                 if (wrongCount > 0) wrongCount--;
                 mistakeQueue = mistakeQueue.filter(m => m !== qVal);
+            } else {
+                if (historyData[qVal] !== 'wrong') historyData[qVal] = 'correct';
             }
 
             updateScoreBoard();
@@ -649,7 +648,8 @@
                 if(selectedAnswerDiv) selectedAnswerDiv.classList.remove('wrong');
                 selectedQuestionDiv = null;
                 selectedAnswerDiv = null;
-                msgBox.innerText = "Bir işlem ve bir sonuç seç!";
+                // Yazı burada da güncellendi
+                msgBox.innerText = "Bir sonuç ve bir işlem seç!";
                 msgBox.style.color = "#34495e";
                 isAnimating = false;
             }, 600);
@@ -660,7 +660,8 @@
         dropPair(); 
         
         const msgBox = document.getElementById('message');
-        msgBox.innerText = "Bir işlem ve bir sonuç seç!";
+        // Yazı burada da güncellendi
+        msgBox.innerText = "Bir sonuç ve bir işlem seç!";
         msgBox.style.color = "#34495e";
         isAnimating = false;
     }
@@ -725,7 +726,8 @@
         if (qRemaining === 0) {
             initializeBoard();
             const msgBox = document.getElementById('message');
-            msgBox.innerText = "Bir işlem ve bir sonuç seç!";
+            // Yazı burada da güncellendi
+            msgBox.innerText = "Bir sonuç ve bir işlem seç!";
             msgBox.style.color = "#34495e";
         }
     }
